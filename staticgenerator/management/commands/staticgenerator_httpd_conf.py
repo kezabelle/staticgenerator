@@ -1,7 +1,8 @@
 import os
 from django.core.management.base import BaseCommand, CommandError
 from django.template import Template, Context
-from opt_parse import make_option
+from django.template.loader import render_to_string
+from optparse import make_option
 
 class Command(BaseCommand):
     can_import_settings = True
@@ -36,7 +37,6 @@ class Command(BaseCommand):
         if not hasattr(settings, 'WEB_ROOT'):
             raise CommandError('Could not find WEB_ROOT in your settings module')
 
-        context = Context({'domain': site.domain, 'web_root': settings.WEB_ROOT})
-        template = os.path.join(os.getcwd(), '%s_template.conf' % options['server_config'])
-        template = Template(template)
-        self.stdout.write(template.render(context))
+        context = {'domain': site, 'web_root': settings.WEB_ROOT}
+        template = render_to_string('staticgenerator/%s.conf' % options['server_config'], context)
+        self.stdout.write(template)
