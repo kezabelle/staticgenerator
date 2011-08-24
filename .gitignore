@@ -1,4 +1,6 @@
 *~
 *.pyc
+*.pyo
 .coverage
 test_data
+*.swp
